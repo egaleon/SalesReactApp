@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "xcV3cc2KuXBCVrK4YMyak9c3phD5RF7R27SH4vtMLDSuBYEXFE7dTYLKx62yfyWjK1U5xY8c/ZGO68q2cX8nvQ==",
+  "success": true,
+  "projectFilePath": "E:\\onboarding-task\\SalesReactApp\\SalesReactApp.Server\\SalesReactApp.Server.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Gabriel\\.nuget\\packages\\microsoft.aspnetcore.spaproxy\\8.0.4\\microsoft.aspnetcore.spaproxy.8.0.4.nupkg.sha512"
+  ],
+  "logs": []
+}
