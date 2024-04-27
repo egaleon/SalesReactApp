@@ -36,3 +36,10 @@ th, td {
     padding: 30px 20px;
     /*box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.09);*/
 }
+
+
+/* Utilities */
+.u-separator-sm {
+    margin-bottom: 20px;
+
+}

@@ -1,5 +1,7 @@
 import React from 'react';
 import TableBase from '../table/Table.jsx';
+import { Button } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 var customersJson = {
     "customers": [
@@ -22,6 +24,9 @@ var customersJson = {
 };
 
 const Customers = () => {
+    function onAddClick() {
+        alert(`Add new Customer`);
+    }
     function onEditClick(id) {
         alert(`Edit click ID: ${id}`);
     }
@@ -32,6 +37,8 @@ const Customers = () => {
     return (
         <>
             <h6>Customers component</h6>
+            <Button variant="primary" onClick={onAddClick}>New Customer</Button>
+            <div className="u-separator-sm"></div>
             <TableBase props={customersJson.customers}
                 colnames={['ID', 'Name', 'Address']}
                 onEditClick={onEditClick}

@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { Button, Card, Nav, Tabs, Tab, Container, Row, Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const TableBase = ({ props, colnames, onEditClick, onDeleteClick }) => {
