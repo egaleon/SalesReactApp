@@ -28,3 +28,4 @@ E:\onboarding-task\SalesReactApp\SalesReactApp.Server\obj\Debug\net8.0\refint\Sa
 E:\onboarding-task\SalesReactApp\SalesReactApp.Server\obj\Debug\net8.0\SalesReactApp.Server.pdb
 E:\onboarding-task\SalesReactApp\SalesReactApp.Server\obj\Debug\net8.0\SalesReactApp.Server.genruntimeconfig.cache
 E:\onboarding-task\SalesReactApp\SalesReactApp.Server\obj\Debug\net8.0\ref\SalesReactApp.Server.dll
+E:\onboarding-task\SalesReactApp\SalesReactApp.Server\obj\Debug\net8.0\SalesReactApp.Server.sourcelink.json
