@@ -1,7 +1,10 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import TableBase from '../table/Table.jsx';
 import { Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 
 var customersJson = {
     "customers": [
@@ -24,6 +27,28 @@ var customersJson = {
 };
 
 const Customers = () => {
+    const [customers, setCustomers] = useState([]);
+    const apiUrl = 'http://localhost:5071/api/customers';
+
+    useEffect(() => {
+        fetchCustomers();
+    }, []);
+
+    // GET: api/Customers
+    const fetchCustomers = async () => {
+        try {
+            const response = await axios.get(apiUrl);
+            setCustomers(response.data);
+        } catch (error) {
+            console.error('Error fetching customers:', error);
+        }
+    };
+
+    // GET: api/Customers/{id}
+    // PUT: api/Customers/{id}
+    // POST: api/Customers
+    // DELETE: api/Customers/{id}
+
     function onAddClick() {
         alert(`Add new Customer`);
     }
@@ -37,6 +62,8 @@ const Customers = () => {
     return (
         <>
             <h6>Customers component</h6>
+            <div>{customers && customers.toString()}</div>
+            { /*
             <Button variant="primary" onClick={onAddClick}>New Customer</Button>
             <div className="u-separator-sm"></div>
             <TableBase props={customersJson.customers}
@@ -44,6 +71,7 @@ const Customers = () => {
                 onEditClick={onEditClick}
                 onDeleteClick={onDeleteClick}>
             </TableBase>
+            */}
         </>
     );
 }

@@ -16,8 +16,8 @@ const TableBase = ({ props, colnames, onEditClick, onDeleteClick }) => {
             <tbody>
                 {props && props.map(customer => (
                     <tr key={customer.Id}>
-                        { Object.getOwnPropertyNames(customer).map(p => (
-                            <td>{customer[p]}</td>
+                        { Object.getOwnPropertyNames(customer).map((p,i) => (
+                            <td key={i}>{customer[p]}</td>
                         ))}
                         <td>
                             <Button variant="warning" onClick={() => onEditClick(customer.Id)}>Edit</Button>&nbsp;
