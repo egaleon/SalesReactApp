@@ -39,12 +39,17 @@ const Customers = () => {
         try {
             const response = await axios.get(apiUrl);
             setCustomers(response.data);
+            console.log(response.data);
         } catch (error) {
             console.error('Error fetching customers:', error);
         }
     };
 
     // GET: api/Customers/{id}
+
+
+
+
     // PUT: api/Customers/{id}
     // POST: api/Customers
     // DELETE: api/Customers/{id}
