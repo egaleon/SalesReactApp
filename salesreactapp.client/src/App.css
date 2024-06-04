@@ -37,9 +37,28 @@ th, td {
     /*box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.09);*/
 }
 
+.sales-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: rgba(0,0,0,0.75);
+}
+
+/* Customers */
+.sales-btn-add-new {
+    margin-bottom: 20px;
+}
+
 
 /* Utilities */
 .u-separator-sm {
     margin-bottom: 20px;
-
 }
+
+
