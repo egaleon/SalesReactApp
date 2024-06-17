@@ -12,4 +12,8 @@
     <None Remove="src\NewFolder\**" />
     <TypeScriptConfiguration Remove="src\NewFolder\**" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\assets\components\ReactComponent.jsx" />
+    <None Remove="src\assets\components\ReactComponent1.jsx" />
+  </ItemGroup>
 </Project>

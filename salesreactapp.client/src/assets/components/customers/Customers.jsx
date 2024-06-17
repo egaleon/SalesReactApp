@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Form, Modal, Table } from 'react-bootstrap';
-import Spinner from 'react-bootstrap/Spinner';
 import { AiOutlineCheck } from "react-icons/ai";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import Loader from '../Loader';
+import DialogConfirmDelete from '../DialogConfirmDelete';
 
 const Customers = () => {
     const [customers, setCustomers] = useState([]);
     const newCustomer = { name: '', address: '' };
     const [addingCustomer, setAddingCustomer] = useState(false);
-
     const [currentEditCustomer, setCurrentEditCustomer] = useState(null);
+    const [currentIdToDelete, setCurrentIdToDelete] = useState(-1); 
     const [editingCustomer, setEditingCustomer] = useState(false);
+    const [showDialogConfirmDelete, setShowDialogConfirmDelete] = useState(false); 
 
     useEffect(() => {
         fetchCustomers();
@@ -20,8 +21,8 @@ const Customers = () => {
 
 
     useEffect(() => {
-        console.log('currentEditCustomer: ',currentEditCustomer);
-    }, [currentEditCustomer]);
+        console.log('currentIdToDelete: ', currentIdToDelete);
+    }, [currentIdToDelete]);
 
 
     const apiUrl = 'http://localhost:5071/api/customers';
@@ -41,15 +42,27 @@ const Customers = () => {
     
     { /*EDIT NEW CUSTOMER BUTTON*/ }
     function onEditClick(id) {
-        alert(`Edit click ID: ${id}`);
+        setCurrentIdToDelete(id);
         setEditingCustomer(true);
         fetchCustomer(id);
     }
     const handleEditModalClose = () => setEditingCustomer(false);
 
+    { /* DELETE CUSTOMER BUTTON*/ }
     function onDeleteClick(id) {
-        alert(`Delete click ID: ${id}`);
+        setCurrentIdToDelete(id);
+        setShowDialogConfirmDelete(true);
     }
+
+    const handleConfirmDelete = () => {
+        deleteCustomer(currentIdToDelete);
+        handleCloseDialogConfirmDelete();
+    };
+
+    const handleCloseDialogConfirmDelete = () => {
+        setCurrentIdToDelete(-1);
+        setShowDialogConfirmDelete(false)
+    };
 
     { /* CRUD HTTP METHODS */ }
     const handleAddCustomer = async (customer) => {
@@ -85,33 +98,51 @@ const Customers = () => {
         }
     };
 
+    const deleteCustomer = async (id) => {
+        try {
+            const response = await axios.delete(`${apiUrl}/${id}`);
+            console.log('Customer deleted:', response.data);
+            setCurrentIdToDelete(-1);
+            fetchCustomers();
+        } catch (error) {
+            console.error('Error deleting customer:', error);
+        }
+    };
 
     return (
         <div>
             <Button className="sales-btn-add-new" onClick={handleAddModalOpen}>Add Customer</Button>
-            { /* Modal Adding */
-                addingCustomer && 
                 <ModalAddEdit showModal={addingCustomer}
                     handleModalClose={handleAddModalClose}
                     handleCustomer={handleAddCustomer}
                     customer={newCustomer}
+                    mode="Create"
                 >
-                </ModalAddEdit>
-            }
+            </ModalAddEdit>
 
             { /* Modal Editing */}
-
             { editingCustomer ? currentEditCustomer ? (
                 <ModalAddEdit showModal={editingCustomer}
                     handleModalClose={handleEditModalClose}
                     handleCustomer={handleUpdateCustomer}
                     customer={currentEditCustomer}
+                    mode="Edit"
                 >
                 </ModalAddEdit>
                 ) : (
                     <Loader></Loader>
                 ) : null
             }
+
+            {/* Delete Dialog */}
+            <DialogConfirmDelete
+                show={showDialogConfirmDelete}
+                handleClose={handleCloseDialogConfirmDelete}
+                handleConfirm={handleConfirmDelete}
+                headerText='Delete customer'
+            >
+
+            </DialogConfirmDelete>
 
             {/* Render record list */}
             <DataTable customers={customers}
@@ -155,7 +186,7 @@ const DataTable = ({ customers, onEditClick, onDeleteClick }) => {
 };
 
 
-const ModalAddEdit = ({ showModal, handleModalClose, handleCustomer, customer }) => {
+const ModalAddEdit = ({ showModal, handleModalClose, handleCustomer, customer, mode }) => {
     const [currentCustomer, setCurrentCustomer] = useState(customer);
     
     { /* Form handling */ }
@@ -170,7 +201,7 @@ const ModalAddEdit = ({ showModal, handleModalClose, handleCustomer, customer })
     return (
             <Modal show={showModal} onHide={handleModalClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add New Customer</Modal.Title>
+                <Modal.Title>{mode} customer</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
@@ -189,18 +220,9 @@ const ModalAddEdit = ({ showModal, handleModalClose, handleCustomer, customer })
                         Close
                     </Button>
                     <Button variant="success" onClick={() => handleCustomer(currentCustomer)}>
-                        Create <AiOutlineCheck />
+                        {mode} <AiOutlineCheck />
                     </Button>
                 </Modal.Footer>
             </Modal>
     );        
-}
-
-
-const Loader = () => {
-    return (
-        <div className="sales-loader">
-            <Spinner animation="border" />&#160;&#160; L O A D I N G ...
-        </div>
-    );
 }
