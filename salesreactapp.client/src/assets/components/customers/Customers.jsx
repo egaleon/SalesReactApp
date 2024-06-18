@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Form, Modal, Table } from 'react-bootstrap';
-import { AiOutlineCheck } from "react-icons/ai";
+import { AiOutlineCheck, AiFillEdit, AiFillDelete } from "react-icons/ai";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Loader from '../Loader';
 import DialogConfirmDelete from '../DialogConfirmDelete';
@@ -175,8 +175,8 @@ const DataTable = ({ customers, onEditClick, onDeleteClick }) => {
                         <td>{customer.name}</td>
                         <td>{customer.address}</td>
                         <td>
-                            <Button variant="warning" onClick={() => onEditClick(customer.id)}>Edit</Button>&nbsp;
-                            <Button variant="danger" onClick={() => onDeleteClick(customer.id)}>Delete</Button>
+                            <Button variant="warning" onClick={() => onEditClick(customer.id)}><AiFillEdit /> Edit</Button>&nbsp;
+                            <Button variant="danger" onClick={() => onDeleteClick(customer.id)}><AiFillDelete /> Delete</Button>
                         </td>
                     </tr>
                 ))}

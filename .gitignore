@@ -25,3 +25,6 @@ dist-ssr
 *.sw?
 
 SalesReactApp.client/.gitignore
+SalesReactApp.Server/bin/
+SalesReactApp.Server/obj/
+salesreactapp.client/obj/

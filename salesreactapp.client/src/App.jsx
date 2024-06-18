@@ -16,6 +16,7 @@ const App = () => {
                 <Container>
                     <Nav
                         onSelect={(selectedKey) => setCurrEntity(selectedKey)}
+                        defaultActiveKey="customers"
                     >
                         <Nav.Item>
                             <Nav.Link eventKey="customers">Customers</Nav.Link>
