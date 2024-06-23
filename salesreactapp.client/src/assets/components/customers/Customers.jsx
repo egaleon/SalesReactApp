@@ -147,11 +147,13 @@ const Customers = () => {
 
             </DialogConfirmDelete>
 
-            {/* Render record list */}
-            <DataTable customers={customers}
-                onEditClick={onEditClick}
-                onDeleteClick={onDeleteClick}
-            ></DataTable>
+            {/* Render record list */
+                !customers?.length ? (<div>There are no elements to be shown</div>) : (
+                    <DataTable customers={customers}
+                        onEditClick={onEditClick}
+                        onDeleteClick={onDeleteClick}
+                    ></DataTable>
+            )}
         </div>
     );
 };

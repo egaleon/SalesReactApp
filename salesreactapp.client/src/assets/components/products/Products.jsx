@@ -147,11 +147,13 @@ const Products = () => {
             >
             </DialogConfirmDelete>
 
-            {/* Render record list */}
-            <DataTable products={products}
-                onEditClick={onEditClick}
-                onDeleteClick={onDeleteClick}
-            ></DataTable>
+            {/* Render record list */
+                !products?.length ? (<div>There are no elements to be shown</div>) : (
+                    <DataTable products={products}
+                        onEditClick={onEditClick}
+                        onDeleteClick={onDeleteClick}
+                    ></DataTable>
+                )}
         </div>
     );
 };
