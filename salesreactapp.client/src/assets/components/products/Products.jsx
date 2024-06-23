@@ -7,14 +7,14 @@ import Loader from '../Loader';
 import DialogConfirmDelete from '../DialogConfirmDelete';
 
 const Products = () => {
-    const [products, setProducts] = useState([]);
     const newProduct = { name: '', price: '' };
-    const [addingProduct, setAddingProduct] = useState(false);
+    const [products, setProducts] = useState([]);
     const [currentEditProduct, setCurrentEditProduct] = useState(null);
     const [currentIdToDelete, setCurrentIdToDelete] = useState(-1);
+    const [addingProduct, setAddingProduct] = useState(false);
     const [editingProduct, setEditingProduct] = useState(false);
     const [showDialogConfirmDelete, setShowDialogConfirmDelete] = useState(false);
-
+ 
     useEffect(() => {
         fetchProducts();
     }, []);
@@ -112,13 +112,17 @@ const Products = () => {
     return (
         <div>
             <Button className="sales-btn-add-new" onClick={handleAddModalOpen}>Add Product</Button>
-            <ModalAddEdit showModal={addingProduct}
-                handleModalClose={handleAddModalClose}
-                handleProduct={handleAddProduct}
-                product={newProduct}
-                mode="Create"
-            >
-            </ModalAddEdit>
+
+            {addingProduct && (
+                <ModalAddEdit showModal={addingProduct}
+                    handleModalClose={handleAddModalClose}
+                    handleProduct={handleAddProduct}
+                    product={newProduct}
+                    mode="Create"
+                >
+                </ModalAddEdit>
+                )
+            }
 
             { /* Modal Editing */}
             {editingProduct ? currentEditProduct ? (
@@ -141,7 +145,6 @@ const Products = () => {
                 handleConfirm={handleConfirmDelete}
                 headerText='Delete product'
             >
-
             </DialogConfirmDelete>
 
             {/* Render record list */}
@@ -186,6 +189,8 @@ const DataTable = ({ products, onEditClick, onDeleteClick }) => {
 
 const ModalAddEdit = ({ showModal, handleModalClose, handleProduct, product, mode }) => {
     const [currentProduct, setCurrentProduct] = useState(product);
+    console.log('New object: ', currentProduct);
+    console.log('and mode: ', mode);
 
     { /* Form handling */ }
     const handleChange = (e) => {

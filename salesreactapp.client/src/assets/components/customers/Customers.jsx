@@ -112,13 +112,16 @@ const Customers = () => {
     return (
         <div>
             <Button className="sales-btn-add-new" onClick={handleAddModalOpen}>Add Customer</Button>
-                <ModalAddEdit showModal={addingCustomer}
-                    handleModalClose={handleAddModalClose}
-                    handleCustomer={handleAddCustomer}
-                    customer={newCustomer}
-                    mode="Create"
-                >
+
+            { /* Modal Adding */}
+            {addingCustomer && (<ModalAddEdit showModal={addingCustomer}
+                handleModalClose={handleAddModalClose}
+                handleCustomer={handleAddCustomer}
+                customer={newCustomer}
+                mode="Create"
+            >
             </ModalAddEdit>
+            )}
 
             { /* Modal Editing */}
             { editingCustomer ? currentEditCustomer ? (
