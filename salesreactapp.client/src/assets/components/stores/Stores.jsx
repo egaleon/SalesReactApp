@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Form, Modal, Table } from 'react-bootstrap';
+import { Alert, Button, Form, Modal, Table } from 'react-bootstrap';
 import { AiOutlineCheck, AiFillEdit, AiFillDelete } from "react-icons/ai";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Loader from '../Loader';
@@ -18,12 +18,6 @@ const Stores = () => {
     useEffect(() => {
         fetchStores();
     }, []);
-
-
-    useEffect(() => {
-        console.log('currentIdToDelete: ', currentIdToDelete);
-    }, [currentIdToDelete]);
-
 
     const apiUrl = 'http://localhost:5071/api/stores';
 
@@ -68,7 +62,6 @@ const Stores = () => {
     const handleAddStore = async (store) => {
         try {
             const response = await axios.post(apiUrl, store);
-            console.log('New store added:', response.data);
             fetchStores();
             handleAddModalClose();
         } catch (error) {
@@ -89,7 +82,6 @@ const Stores = () => {
     const handleUpdateStore = async (updatedStore) => {
         try {
             const response = await axios.put(`${apiUrl}/${updatedStore.id}`, updatedStore);
-            console.log('Store updated:', response.data);
             fetchStores();
             handleEditModalClose();
             setCurrentEditStore(null);
@@ -101,7 +93,6 @@ const Stores = () => {
     const deleteStore = async (id) => {
         try {
             const response = await axios.delete(`${apiUrl}/${id}`);
-            console.log('Store deleted:', response.data);
             setCurrentIdToDelete(-1);
             fetchStores();
         } catch (error) {
@@ -159,7 +150,6 @@ const Stores = () => {
 };
 
 const DataTable = ({ stores, onEditClick, onDeleteClick }) => {
-    console.log('STORES -> ', stores);
     return (
         <Table striped bordered hover>
             <thead>
@@ -190,6 +180,7 @@ const DataTable = ({ stores, onEditClick, onDeleteClick }) => {
 
 const ModalAddEdit = ({ showModal, handleModalClose, handleStore, store, mode }) => {
     const [currentStore, setCurrentStore] = useState(store);
+    const [error, setError] = useState('');
 
     { /* Form handling */ }
     const handleChange = (e) => {
@@ -200,12 +191,48 @@ const ModalAddEdit = ({ showModal, handleModalClose, handleStore, store, mode })
         }));
     };
 
+    const handleSubmit = () => {
+        const errorMsg = validateForm();
+        if (errorMsg.length > 0) {
+            setError(errorMsg);
+            return;
+        }
+        setError('');
+        handleStore(currentStore);
+    };
+
+    const validateForm = () => {
+        const errors = [];
+        const namePattern = /^[a-zA-Z0-9\s.'-]+$/;
+        const addressPattern = /^[a-zA-Z0-9\s.,'/-]+$/;
+        if (!currentStore.name) {
+            errors.push('Name is required.');
+        } else if (!namePattern.test(currentStore.name)) {
+            errors.push('Incorrect name format.');
+        }
+        if (!currentStore.address) {
+            errors.push('Address is required.');
+        } else if (!addressPattern.test(currentStore.address)) {
+            errors.push('Incorrect address format.');
+        }
+        return errors;
+    };
+
     return (
         <Modal show={showModal} onHide={handleModalClose}>
             <Modal.Header closeButton>
                 <Modal.Title>{mode} store</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                {error.length > 0 && (
+                    <Alert variant="danger">
+                        <ul className="sales-error-messages">
+                            {error.map((err, index) => (
+                                <li key={index}>{err}</li>
+                            ))}
+                        </ul>
+                    </Alert>
+                )}
                 <Form>
                     <Form.Group controlId="formName">
                         <Form.Label>Name</Form.Label>
@@ -221,7 +248,7 @@ const ModalAddEdit = ({ showModal, handleModalClose, handleStore, store, mode })
                 <Button variant="dark" onClick={handleModalClose}>
                     Close
                 </Button>
-                <Button variant="success" onClick={() => handleStore(currentStore)}>
+                <Button variant="success" onClick={handleSubmit}>
                     {mode} <AiOutlineCheck />
                 </Button>
             </Modal.Footer>

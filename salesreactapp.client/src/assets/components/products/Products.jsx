@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Form, Modal, Table } from 'react-bootstrap';
+import { Alert, Button, Form, Modal, Table } from 'react-bootstrap';
 import { AiOutlineCheck, AiFillEdit, AiFillDelete } from "react-icons/ai";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Loader from '../Loader';
@@ -18,12 +18,6 @@ const Products = () => {
     useEffect(() => {
         fetchProducts();
     }, []);
-
-
-    useEffect(() => {
-        console.log('currentIdToDelete: ', currentIdToDelete);
-    }, [currentIdToDelete]);
-
 
     const apiUrl = 'http://localhost:5071/api/products';
 
@@ -68,7 +62,6 @@ const Products = () => {
     const handleAddProduct = async (product) => {
         try {
             const response = await axios.post(apiUrl, product);
-            console.log('New product added:', response.data);
             fetchProducts();
             handleAddModalClose();
         } catch (error) {
@@ -89,7 +82,6 @@ const Products = () => {
     const handleUpdateProduct = async (updatedProduct) => {
         try {
             const response = await axios.put(`${apiUrl}/${updatedProduct.id}`, updatedProduct);
-            console.log('Product updated:', response.data);
             fetchProducts();
             handleEditModalClose();
             setCurrentEditProduct(null);
@@ -101,7 +93,6 @@ const Products = () => {
     const deleteProduct = async (id) => {
         try {
             const response = await axios.delete(`${apiUrl}/${id}`);
-            console.log('Product deleted:', response.data);
             setCurrentIdToDelete(-1);
             fetchProducts();
         } catch (error) {
@@ -191,8 +182,7 @@ const DataTable = ({ products, onEditClick, onDeleteClick }) => {
 
 const ModalAddEdit = ({ showModal, handleModalClose, handleProduct, product, mode }) => {
     const [currentProduct, setCurrentProduct] = useState(product);
-    console.log('New object: ', currentProduct);
-    console.log('and mode: ', mode);
+    const [error, setError] = useState('');
 
     { /* Form handling */ }
     const handleChange = (e) => {
@@ -203,12 +193,45 @@ const ModalAddEdit = ({ showModal, handleModalClose, handleProduct, product, mod
         }));
     };
 
+    const handleSubmit = () => {
+        const errorMsg = validateForm();
+        if (errorMsg.length > 0) {
+            setError(errorMsg);
+            return;
+        }
+        setError('');
+        handleProduct(currentProduct);
+    };
+
+    const validateForm = () => {
+        const errors = [];
+        const namePattern =/[a-zA-Z0-9\s._'-]/;
+        if (!currentProduct.name) {
+            errors.push('Name is required.');
+        } else if (!namePattern.test(currentProduct.name)) {
+            errors.push('Incorrect name format.');
+        }
+        if (!currentProduct.price) {
+            errors.push('Price is required.');
+        }
+        return errors;
+    };
+
     return (
         <Modal show={showModal} onHide={handleModalClose}>
             <Modal.Header closeButton>
                 <Modal.Title>{mode} product</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                {error.length > 0 && (
+                    <Alert variant="danger">
+                        <ul className="sales-error-messages">
+                            {error.map((err, index) => (
+                                <li key={index}>{err}</li>
+                            ))}
+                        </ul>
+                    </Alert>
+                )}
                 <Form>
                     <Form.Group controlId="formName">
                         <Form.Label>Name</Form.Label>
@@ -224,7 +247,7 @@ const ModalAddEdit = ({ showModal, handleModalClose, handleProduct, product, mod
                 <Button variant="dark" onClick={handleModalClose}>
                     Close
                 </Button>
-                <Button variant="success" onClick={() => handleProduct(currentProduct)}>
+                <Button variant="success" onClick={handleSubmit}>
                     {mode} <AiOutlineCheck />
                 </Button>
             </Modal.Footer>

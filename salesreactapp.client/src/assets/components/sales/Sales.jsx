@@ -33,10 +33,6 @@ const Sales = () => {
         fetchStores();
     }, []);
 
-    useEffect(() => {
-        console.log('currentIdToDelete: ', currentIdToDelete);
-    }, [currentIdToDelete]);
-
     { /* CRUD HTTP METHODS */ }
     const fetchSales = async () => {
         try {
@@ -77,7 +73,6 @@ const Sales = () => {
     const handleAddSale = async (sale) => {
         try {
             const response = await axios.post(salesApiUrl, sale);
-            //console.log('New sale added:', response.data);
             fetchSales();
             handleAddModalClose();
         } catch (error) {
@@ -98,7 +93,6 @@ const Sales = () => {
     const handleUpdateSale = async (updatedSale) => {
         try {
             const response = await axios.put(`${salesApiUrl}/${updatedSale.id}`, updatedSale);
-            //console.log('Sale updated:', response.data);
             fetchSales();
             handleEditModalClose();
             setCurrentEditSale(null);
@@ -110,7 +104,6 @@ const Sales = () => {
     const deleteSale = async (id) => {
         try {
             const response = await axios.delete(`${salesApiUrl}/${id}`);
-            //console.log('Sale deleted:', response.data);
             setCurrentIdToDelete(-1);
             fetchSales();
         } catch (error) {
@@ -291,9 +284,7 @@ const ModalAddEdit = ({ showModal, handleModalClose, handleSale, sale, customers
         }));
     };
 
-
     const validateDateFormat = (date) => {
-        console.log("My date: ", typeof date);
         const datePattern = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
         return datePattern.test(date);
     };
@@ -326,7 +317,6 @@ const ModalAddEdit = ({ showModal, handleModalClose, handleSale, sale, customers
             return;
         }
         setError('');
-        console.log("currentSale:", currentSale);
         handleSale(currentSale);
     };
 
@@ -350,18 +340,11 @@ const ModalAddEdit = ({ showModal, handleModalClose, handleSale, sale, customers
                         <Form.Label>Date sold</Form.Label>
                         <Form.Control
                             type="date"
-                            //placeholder=""
                             name="dateSold"
                             value={currentSale.dateSold}
                             onChange={handleChange}
                         />
                     </Form.Group>
-                    {/*
-                    <Form.Group controlId="formCustomerId">
-                        <Form.Label>Customer</Form.Label>
-                        <Form.Control type="text" placeholder="Enter address" name="address" value={currentSale.address} onChange={handleChange} />
-                    </Form.Group>
-                    */}
                     <Form.Group controlId="formCustomerId">
                         <Form.Label>Customer</Form.Label>
                         <Form.Control
