@@ -230,7 +230,6 @@ const DataTable = ({ sales, customers, products, stores, onEditClick, onDeleteCl
         <Table striped bordered hover>
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Date Sold</th>
                     <th>Customer</th>
                     <th>Product</th>
@@ -241,7 +240,6 @@ const DataTable = ({ sales, customers, products, stores, onEditClick, onDeleteCl
             <tbody>
                 {sales.map(sale => (
                     <tr key={sale.id}>
-                        <td>{sale.id}</td>
                         <td>{formatDate(sale.dateSold)}</td>
                         <td>{getCustomerName(sale.customerId)}</td>
                         <td>{getProductName(sale.productId)}</td>

@@ -154,7 +154,6 @@ const DataTable = ({ stores, onEditClick, onDeleteClick }) => {
         <Table striped bordered hover>
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
                     <th>Address</th>
                     <th>Actions</th>
@@ -163,7 +162,6 @@ const DataTable = ({ stores, onEditClick, onDeleteClick }) => {
             <tbody>
                 {stores.map(store => (
                     <tr key={store.id}>
-                        <td>{store.id}</td>
                         <td>{store.name}</td>
                         <td>{store.address}</td>
                         <td>

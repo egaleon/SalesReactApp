@@ -158,7 +158,6 @@ const DataTable = ({ customers, onEditClick, onDeleteClick }) => {
         <Table striped bordered hover>
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
                     <th>Address</th>
                     <th>Actions</th>
@@ -167,7 +166,6 @@ const DataTable = ({ customers, onEditClick, onDeleteClick }) => {
             <tbody>
                 {customers.map(customer => (
                     <tr key={customer.id}>
-                        <td>{customer.id}</td>
                         <td>{customer.name}</td>
                         <td>{customer.address}</td>
                         <td>
