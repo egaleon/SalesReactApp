@@ -8,6 +8,7 @@ import DialogConfirmDelete from '../DialogConfirmDelete';
 
 const Stores = () => {
     const [stores, setStores] = useState([]);
+    const [loadingStores, setLoadingStores] = useState(false);
     const newStore = { name: '', address: '' };
     const [addingStore, setAddingStore] = useState(false);
     const [currentEditStore, setCurrentEditStore] = useState(null);
@@ -19,14 +20,17 @@ const Stores = () => {
         fetchStores();
     }, []);
 
-    const apiUrl = 'http://localhost:5071/api/stores';
+    const apiUrl = 'https://salesapp-leon-avcedxb4hue3aqer.eastus-01.azurewebsites.net/api/stores';
 
     const fetchStores = async () => {
+        setLoadingStores(true);
         try {
             const response = await axios.get(apiUrl);
             setStores(response.data);
+            setLoadingStores(false);
         } catch (error) {
             console.error('Error fetching stores:', error);
+            setLoadingStores(false);
         }
     };
 
@@ -102,8 +106,8 @@ const Stores = () => {
 
     return (
         <div>
-            <Button className="sales-btn-add-new" onClick={handleAddModalOpen}>Add Store</Button>
-
+            {!loadingStores && (<Button className="sales-btn-add-new" onClick={handleAddModalOpen}>Add Store</Button>)}
+            
             { /* Modal Adding */}
             {addingStore && (<ModalAddEdit showModal={addingStore}
                 handleModalClose={handleAddModalClose}
@@ -138,13 +142,17 @@ const Stores = () => {
 
             </DialogConfirmDelete>
 
-            {/* Render record list */
-                !stores?.length ? (<div>There are no elements to be shown</div>): (
-                    <DataTable stores = { stores }
-                onEditClick = { onEditClick }
-                onDeleteClick = { onDeleteClick }
-                ></DataTable>)
-            }
+
+            {/* Render record list */}
+            {loadingStores ? (<div><b><i>Getting Stores ...</i></b></div>) : (
+                !stores?.length ? (<div>There are no elements to be shown</div>) : (
+                    <DataTable stores={stores}
+                        onEditClick={onEditClick}
+                        onDeleteClick={onDeleteClick}
+                    ></DataTable>
+                )
+            )
+            }            
         </div>
     );
 };

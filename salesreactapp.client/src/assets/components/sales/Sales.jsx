@@ -8,13 +8,14 @@ import DialogConfirmDelete from '../DialogConfirmDelete';
 
 const Sales = () => {
     const [sales, setSales] = useState([]);
+    const [loadingSales, setLoadingSales] = useState(false);
     const newSale = { customerId: '', productId: '', storeId: '', dateSold: '' };
     //const [newSale, setNewSale] = useState();
     /*....*/
     const [customers, setCustomers] = useState([]);
     const [products, setProducts] = useState([]);
     const [stores, setStores] = useState([]);
-    const apiUrl = 'http://localhost:5071/api';
+    const apiUrl = 'https://salesapp-leon-avcedxb4hue3aqer.eastus-01.azurewebsites.net/api';
     const salesApiUrl = `${apiUrl}/sales`;
     const customersApiUrl = `${apiUrl}/customers`;
     const productsApiUrl = `${apiUrl}/products`;
@@ -35,11 +36,14 @@ const Sales = () => {
 
     { /* CRUD HTTP METHODS */ }
     const fetchSales = async () => {
+        setLoadingSales(true);
         try {
             const response = await axios.get(salesApiUrl);
             setSales(response.data);
+            setLoadingSales(false);
         } catch (error) {
             console.error('Error fetching sales:', error);
+            setLoadingSales(false);
         }
     };
 
@@ -142,8 +146,8 @@ const Sales = () => {
     /* Rendering */
     return (
         <div>
-            <Button className="sales-btn-add-new" onClick={handleAddModalOpen}>Add Sale</Button>
-
+            {!loadingSales && (<Button className="sales-btn-add-new" onClick={handleAddModalOpen}>Add Sale</Button>)}
+            
             { /* Modal Adding */}
             {addingSale && (<ModalAddEdit showModal={addingSale}
                 handleModalClose={handleAddModalClose}
@@ -184,7 +188,8 @@ const Sales = () => {
 
             </DialogConfirmDelete>
 
-            {/* Render record list */
+            {/* Render record list */}
+            {loadingSales ? (<div><b><i>Getting Sales ...</i></b></div>) : (
                 !sales?.length ? (<div>There are no elements to be shown</div>) : (
                     <DataTable sales={sales}
                         customers={customers}
@@ -193,7 +198,9 @@ const Sales = () => {
                         onEditClick={onEditClick}
                         onDeleteClick={onDeleteClick}
                     ></DataTable>
-                )}
+                )
+            )
+            }
         </div>
     );
 };

@@ -1,4 +1,4 @@
-@SalesReactApp.Server_HostAddress = http://localhost:5071
+@SalesReactApp.Server_HostAddress = https://salesapp-leon-avcedxb4hue3aqer.eastus-01.azurewebsites.net/
 
 GET {{SalesReactApp.Server_HostAddress}}/api/Customers
 Accept: application/json

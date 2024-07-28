@@ -9,6 +9,7 @@ import DialogConfirmDelete from '../DialogConfirmDelete';
 const Products = () => {
     const newProduct = { name: '', price: '' };
     const [products, setProducts] = useState([]);
+    const [loadingProducts, setLoadingProducts] = useState(false);
     const [currentEditProduct, setCurrentEditProduct] = useState(null);
     const [currentIdToDelete, setCurrentIdToDelete] = useState(-1);
     const [addingProduct, setAddingProduct] = useState(false);
@@ -19,14 +20,17 @@ const Products = () => {
         fetchProducts();
     }, []);
 
-    const apiUrl = 'http://localhost:5071/api/products';
+    const apiUrl = 'https://salesapp-leon-avcedxb4hue3aqer.eastus-01.azurewebsites.net/api/products';
 
     const fetchProducts = async () => {
+        setLoadingProducts(true);
         try {
             const response = await axios.get(apiUrl);
             setProducts(response.data);
+            setLoadingProducts(false);
         } catch (error) {
             console.error('Error fetching products:', error);
+            setLoadingProducts(false);
         }
     };
 
@@ -102,8 +106,8 @@ const Products = () => {
 
     return (
         <div>
-            <Button className="sales-btn-add-new" onClick={handleAddModalOpen}>Add Product</Button>
-
+            {!loadingProducts && (<Button className="sales-btn-add-new" onClick={handleAddModalOpen}>Add Product</Button>)}
+            
             {addingProduct && (
                 <ModalAddEdit showModal={addingProduct}
                     handleModalClose={handleAddModalClose}
@@ -138,13 +142,17 @@ const Products = () => {
             >
             </DialogConfirmDelete>
 
-            {/* Render record list */
+
+            {/* Render record list */}
+            {loadingProducts ? (<div><b><i>Getting Products ...</i></b></div>) : (
                 !products?.length ? (<div>There are no elements to be shown</div>) : (
                     <DataTable products={products}
                         onEditClick={onEditClick}
                         onDeleteClick={onDeleteClick}
                     ></DataTable>
-                )}
+                )
+            )
+            }
         </div>
     );
 };

@@ -8,6 +8,7 @@ import DialogConfirmDelete from '../DialogConfirmDelete';
 
 const Customers = () => {
     const [customers, setCustomers] = useState([]);
+    const [loadingCustomers, setLoadingCustomers] = useState(false);
     const newCustomer = { name: '', address: '' };
     const [addingCustomer, setAddingCustomer] = useState(false);
     const [currentEditCustomer, setCurrentEditCustomer] = useState(null);
@@ -19,14 +20,17 @@ const Customers = () => {
         fetchCustomers();
     }, []);
 
-    const apiUrl = 'http://localhost:5071/api/customers';
+    const apiUrl = 'https://salesapp-leon-avcedxb4hue3aqer.eastus-01.azurewebsites.net/api/customers';
 
     const fetchCustomers = async () => {
+        setLoadingCustomers(true);
         try {
             const response = await axios.get(apiUrl);
             setCustomers(response.data);
+            setLoadingCustomers(false);
         } catch (error) {
             console.error('Error fetching customers:', error);
+            setLoadingCustomers(false);
         }
     };
 
@@ -102,7 +106,7 @@ const Customers = () => {
 
     return (
         <div>
-            <Button className="sales-btn-add-new" onClick={handleAddModalOpen}>Add Customer</Button>
+            {!loadingCustomers && (<Button className="sales-btn-add-new" onClick={handleAddModalOpen}>Add Customer</Button>)}            
 
             { /* Modal Adding */}
             {addingCustomer && (<ModalAddEdit showModal={addingCustomer}
@@ -138,13 +142,16 @@ const Customers = () => {
 
             </DialogConfirmDelete>
 
-            {/* Render record list */
+            {/* Render record list */}
+            {loadingCustomers ? (<div><b><i>Getting customers ...</i></b></div>) : (
                 !customers?.length ? (<div>There are no elements to be shown</div>) : (
                     <DataTable customers={customers}
                         onEditClick={onEditClick}
                         onDeleteClick={onDeleteClick}
                     ></DataTable>
-            )}
+                )
+            )
+            }
         </div>
     );
 };
