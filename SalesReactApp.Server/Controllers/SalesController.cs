@@ -22,14 +22,14 @@ namespace SalesReactApp.Server.Controllers
 
         // GET: api/Sales
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Sale>>> GetSales()
+        public async Task<ActionResult<IEnumerable<Sale>>> GetSalesAsync()
         {
             return await _context.Sales.ToListAsync();
         }
 
         // GET: api/Sales/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Sale>> GetSale(int id)
+        public async Task<ActionResult<Sale>> GetSaleAsync(int id)
         {
             var sale = await _context.Sales.FindAsync(id);
 
@@ -44,7 +44,7 @@ namespace SalesReactApp.Server.Controllers
         // PUT: api/Sales/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSale(int id, Sale sale)
+        public async Task<IActionResult> PutSaleAsync(int id, Sale sale)
         {
             if (id != sale.Id)
             {
@@ -75,17 +75,17 @@ namespace SalesReactApp.Server.Controllers
         // POST: api/Sales
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Sale>> PostSale(Sale sale)
+        public async Task<ActionResult<Sale>> PostSaleAsync(Sale sale)
         {
             _context.Sales.Add(sale);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSale", new { id = sale.Id }, sale);
+            return CreatedAtAction("GetSaleAsync", new { id = sale.Id }, sale);
         }
 
         // DELETE: api/Sales/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSale(int id)
+        public async Task<IActionResult> DeleteSaleAsync(int id)
         {
             var sale = await _context.Sales.FindAsync(id);
             if (sale == null)

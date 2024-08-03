@@ -22,14 +22,14 @@ namespace SalesReactApp.Server.Controllers
 
         // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomersAsync()
         {
             return await _context.Customers.ToListAsync();
         }
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        public async Task<ActionResult<Customer>> GetCustomerAsync(int id)
         {
             var customer = await _context.Customers.FindAsync(id);
 
@@ -44,7 +44,7 @@ namespace SalesReactApp.Server.Controllers
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(int id, Customer customer)
+        public async Task<IActionResult> PutCustomerAsync(int id, Customer customer)
         {
             if (id != customer.Id)
             {
@@ -75,17 +75,17 @@ namespace SalesReactApp.Server.Controllers
         // POST: api/Customers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public async Task<ActionResult<Customer>> PostCustomerAsync(Customer customer)
         {
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
+            return CreatedAtAction("GetCustomerAsync", new { id = customer.Id }, customer);
         }
 
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomer(int id)
+        public async Task<IActionResult> DeleteCustomerAsync(int id)
         {
             var customer = await _context.Customers.FindAsync(id);
             if (customer == null)
