@@ -29,9 +29,14 @@ namespace SalesReactApp.Server.Controllers
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomerAsync(int id)
+        public async Task<ActionResult<Customer>> GetCustomerAsync(string id)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var customerId) || customerId <= 0)
+            {
+                return BadRequest("Invalid customer ID.");
+            }
+
+            var customer = await _context.Customers.FindAsync(customerId);
 
             if (customer == null)
             {
@@ -44,11 +49,16 @@ namespace SalesReactApp.Server.Controllers
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomerAsync(int id, Customer customer)
+        public async Task<IActionResult> PutCustomerAsync(string id, Customer customer)
         {
-            if (id != customer.Id)
+            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var customerId) || customerId <= 0)
             {
-                return BadRequest();
+                return BadRequest("Invalid customer ID.");
+            }
+
+            if (customerId != customer.Id)
+            {
+                return BadRequest("The Ids do not correspond.");
             }
 
             _context.Entry(customer).State = EntityState.Modified;
@@ -59,7 +69,7 @@ namespace SalesReactApp.Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(id))
+                if (!CustomerExists(customerId))
                 {
                     return NotFound();
                 }
@@ -80,14 +90,19 @@ namespace SalesReactApp.Server.Controllers
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCustomerAsync", new { id = customer.Id }, customer);
+            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
         }
 
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomerAsync(int id)
+        public async Task<IActionResult> DeleteCustomerAsync(string id)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var customerId) || customerId <= 0)
+            {
+                return BadRequest("Invalid customer ID.");
+            }
+
+            var customer = await _context.Customers.FindAsync(customerId);
             if (customer == null)
             {
                 return NotFound();

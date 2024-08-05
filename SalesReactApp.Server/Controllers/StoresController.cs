@@ -29,9 +29,14 @@ namespace SalesReactApp.Server.Controllers
 
         // GET: api/Stores/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Store>> GetStoreAsync(int id)
+        public async Task<ActionResult<Store>> GetStoreAsync(string id)
         {
-            var store = await _context.Stores.FindAsync(id);
+            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var storeId) || storeId <= 0)
+            {
+                return BadRequest("Invalid store Id.");
+            }
+
+            var store = await _context.Stores.FindAsync(storeId);
 
             if (store == null)
             {
@@ -44,11 +49,16 @@ namespace SalesReactApp.Server.Controllers
         // PUT: api/Stores/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStoreAsync(int id, Store store)
+        public async Task<IActionResult> PutStoreAsync(string id, Store store)
         {
-            if (id != store.Id)
+            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var storeId) || storeId <= 0)
             {
-                return BadRequest();
+                return BadRequest("Invalid store Id.");
+            }
+
+            if (storeId != store.Id)
+            {
+                return BadRequest("The Ids do not correspond.");
             }
 
             _context.Entry(store).State = EntityState.Modified;
@@ -59,7 +69,7 @@ namespace SalesReactApp.Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StoreExists(id))
+                if (!StoreExists(storeId))
                 {
                     return NotFound();
                 }
@@ -80,14 +90,19 @@ namespace SalesReactApp.Server.Controllers
             _context.Stores.Add(store);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetStoreAsync", new { id = store.Id }, store);
+            return CreatedAtAction("GetStore", new { id = store.Id }, store);
         }
 
         // DELETE: api/Stores/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStoreAsync(int id)
+        public async Task<IActionResult> DeleteStoreAsync(string id)
         {
-            var store = await _context.Stores.FindAsync(id);
+            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var storeId) || storeId <= 0)
+            {
+                return BadRequest("Invalid store Id.");
+            }
+
+            var store = await _context.Stores.FindAsync(storeId);
             if (store == null)
             {
                 return NotFound();

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Alert, Button, Form, Modal, Table } from 'react-bootstrap';
+import { Alert, Button, Form, Modal, Spinner, Table } from 'react-bootstrap';
 import { AiOutlineCheck, AiFillEdit, AiFillDelete } from "react-icons/ai";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Loader from '../Loader';
@@ -220,17 +220,17 @@ const DataTable = ({ sales, customers, products, stores, onEditClick, onDeleteCl
 
     const getCustomerName = (id) => {
         const customer = customers.find(cust => cust.id === id);
-        return customer ? customer.name : 'Unknown';
+        return customer ? <>{customer.name}</> : <Spinner animation="border" />;
     };
 
     const getProductName = (id) => {
         const product = products.find(prod => prod.id === id);
-        return product ? product.name : 'Unknown';
+        return product ? <>{product.name}</> : <Spinner animation="border" />;
     };
 
     const getStoreName = (id) => {
         const store = stores.find(stor => stor.id === id);
-        return store ? store.name : 'Unknown';
+        return store ? <>{store.name}</> : <Spinner animation="border" />;
     };
 
     return (

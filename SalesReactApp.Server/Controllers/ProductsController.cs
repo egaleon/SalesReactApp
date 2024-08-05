@@ -29,9 +29,15 @@ namespace SalesReactApp.Server.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProductAsync(int id)
+        public async Task<ActionResult<Product>> GetProductAsync(string id)
         {
-            var product = await _context.Products.FindAsync(id);
+            //Id validation
+            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var productId) || productId <= 0)
+            {
+                return BadRequest("Invalid product Id.");
+            }
+
+            var product = await _context.Products.FindAsync(productId);
 
             if (product == null)
             {
@@ -44,11 +50,16 @@ namespace SalesReactApp.Server.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProductAsync(int id, Product product)
+        public async Task<IActionResult> PutProductAsync(string id, Product product)
         {
-            if (id != product.Id)
+            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var productId) || productId <= 0)
             {
-                return BadRequest();
+                return BadRequest("Invalid product Id.");
+            }
+
+            if (productId != product.Id)
+            {
+                return BadRequest("The Ids do not correspond.");
             }
 
             _context.Entry(product).State = EntityState.Modified;
@@ -59,7 +70,7 @@ namespace SalesReactApp.Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(id))
+                if (!ProductExists(productId))
                 {
                     return NotFound();
                 }
@@ -80,14 +91,19 @@ namespace SalesReactApp.Server.Controllers
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProductAsync", new { id = product.Id }, product);
+            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
         }
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProductAsync(int id)
+        public async Task<IActionResult> DeleteProductAsync(string id)
         {
-            var product = await _context.Products.FindAsync(id);
+            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var productId) || productId <= 0)
+            {
+                return BadRequest("Invalid product Id.");
+            }
+
+            var product = await _context.Products.FindAsync(productId);
             if (product == null)
             {
                 return NotFound();

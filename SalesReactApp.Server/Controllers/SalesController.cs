@@ -29,9 +29,15 @@ namespace SalesReactApp.Server.Controllers
 
         // GET: api/Sales/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Sale>> GetSaleAsync(int id)
+        public async Task<ActionResult<Sale>> GetSaleAsync(string id)
         {
-            var sale = await _context.Sales.FindAsync(id);
+            //Id validation
+            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var saleId) || saleId <= 0)
+            {
+                return BadRequest("Invalid sale Id.");
+            }
+
+            var sale = await _context.Sales.FindAsync(saleId);
 
             if (sale == null)
             {
@@ -44,11 +50,17 @@ namespace SalesReactApp.Server.Controllers
         // PUT: api/Sales/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSaleAsync(int id, Sale sale)
+        public async Task<IActionResult> PutSaleAsync(string id, Sale sale)
         {
-            if (id != sale.Id)
+            //Id validation
+            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var saleId) || saleId <= 0)
             {
-                return BadRequest();
+                return BadRequest("Invalid sale Id.");
+            }
+
+            if (saleId != sale.Id)
+            {
+                return BadRequest("The Ids do not correspond.");
             }
 
             _context.Entry(sale).State = EntityState.Modified;
@@ -59,7 +71,7 @@ namespace SalesReactApp.Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SaleExists(id))
+                if (!SaleExists(saleId))
                 {
                     return NotFound();
                 }
@@ -80,14 +92,20 @@ namespace SalesReactApp.Server.Controllers
             _context.Sales.Add(sale);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSaleAsync", new { id = sale.Id }, sale);
+            return CreatedAtAction("GetSale", new { id = sale.Id }, sale);
         }
 
         // DELETE: api/Sales/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSaleAsync(int id)
+        public async Task<IActionResult> DeleteSaleAsync(string id)
         {
-            var sale = await _context.Sales.FindAsync(id);
+            //Id validation
+            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var saleId) || saleId <= 0)
+            {
+                return BadRequest("Invalid sale Id.");
+            }
+
+            var sale = await _context.Sales.FindAsync(saleId);
             if (sale == null)
             {
                 return NotFound();
