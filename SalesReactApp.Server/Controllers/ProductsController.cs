@@ -20,6 +20,15 @@ namespace SalesReactApp.Server.Controllers
             _context = context;
         }
 
+        private ActionResult ValidateId(int? id)
+        {
+            if (id == null || id <= 0)
+            {
+                return BadRequest("Invalid customer Id.");
+            }
+            return null;
+        }
+
         // GET: api/Products
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProductsAsync()
@@ -29,15 +38,16 @@ namespace SalesReactApp.Server.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProductAsync(string id)
+        public async Task<ActionResult<Product>> GetProductAsync(int id)
         {
             //Id validation
-            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var productId) || productId <= 0)
+            var validationResult = ValidateId(id);
+            if (validationResult != null)
             {
-                return BadRequest("Invalid product Id.");
+                return validationResult;
             }
 
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.Products.FindAsync(id);
 
             if (product == null)
             {
@@ -50,14 +60,15 @@ namespace SalesReactApp.Server.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProductAsync(string id, Product product)
+        public async Task<IActionResult> PutProductAsync(int id, Product product)
         {
-            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var productId) || productId <= 0)
+            var validationResult = ValidateId(id);
+            if (validationResult != null)
             {
-                return BadRequest("Invalid product Id.");
+                return validationResult;
             }
 
-            if (productId != product.Id)
+            if (id != product.Id)
             {
                 return BadRequest("The Ids do not correspond.");
             }
@@ -70,7 +81,7 @@ namespace SalesReactApp.Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(productId))
+                if (!ProductExists(id))
                 {
                     return NotFound();
                 }
@@ -96,14 +107,15 @@ namespace SalesReactApp.Server.Controllers
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProductAsync(string id)
+        public async Task<IActionResult> DeleteProductAsync(int id)
         {
-            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var productId) || productId <= 0)
+            var validationResult = ValidateId(id);
+            if (validationResult != null)
             {
-                return BadRequest("Invalid product Id.");
+                return validationResult;
             }
 
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.Products.FindAsync(id);
             if (product == null)
             {
                 return NotFound();

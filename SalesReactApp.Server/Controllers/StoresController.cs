@@ -20,6 +20,15 @@ namespace SalesReactApp.Server.Controllers
             _context = context;
         }
 
+        private ActionResult ValidateId(int? id)
+        {
+            if (id == null || id <= 0)
+            {
+                return BadRequest("Invalid customer Id.");
+            }
+            return null;
+        }
+
         // GET: api/Stores
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Store>>> GetStoresAsync()
@@ -29,14 +38,15 @@ namespace SalesReactApp.Server.Controllers
 
         // GET: api/Stores/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Store>> GetStoreAsync(string id)
+        public async Task<ActionResult<Store>> GetStoreAsync(int id)
         {
-            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var storeId) || storeId <= 0)
+            var validationResult = ValidateId(id);
+            if (validationResult != null)
             {
-                return BadRequest("Invalid store Id.");
+                return validationResult;
             }
 
-            var store = await _context.Stores.FindAsync(storeId);
+            var store = await _context.Stores.FindAsync(id);
 
             if (store == null)
             {
@@ -49,14 +59,15 @@ namespace SalesReactApp.Server.Controllers
         // PUT: api/Stores/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStoreAsync(string id, Store store)
+        public async Task<IActionResult> PutStoreAsync(int id, Store store)
         {
-            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var storeId) || storeId <= 0)
+            var validationResult = ValidateId(id);
+            if (validationResult != null)
             {
-                return BadRequest("Invalid store Id.");
+                return validationResult;
             }
 
-            if (storeId != store.Id)
+            if (id != store.Id)
             {
                 return BadRequest("The Ids do not correspond.");
             }
@@ -69,7 +80,7 @@ namespace SalesReactApp.Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StoreExists(storeId))
+                if (!StoreExists(id))
                 {
                     return NotFound();
                 }
@@ -95,14 +106,15 @@ namespace SalesReactApp.Server.Controllers
 
         // DELETE: api/Stores/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStoreAsync(string id)
+        public async Task<IActionResult> DeleteStoreAsync(int id)
         {
-            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var storeId) || storeId <= 0)
+            var validationResult = ValidateId(id);
+            if (validationResult != null)
             {
-                return BadRequest("Invalid store Id.");
+                return validationResult;
             }
 
-            var store = await _context.Stores.FindAsync(storeId);
+            var store = await _context.Stores.FindAsync(id);
             if (store == null)
             {
                 return NotFound();

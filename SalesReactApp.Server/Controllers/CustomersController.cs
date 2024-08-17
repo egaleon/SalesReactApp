@@ -20,6 +20,15 @@ namespace SalesReactApp.Server.Controllers
             _context = context;
         }
 
+        private ActionResult ValidateId(int? id)
+        {
+            if (id == null || id <= 0)
+            {
+                return BadRequest("Invalid customer Id.");
+            }
+            return null;
+        }
+
         // GET: api/Customers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomersAsync()
@@ -29,14 +38,15 @@ namespace SalesReactApp.Server.Controllers
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomerAsync(string id)
+        public async Task<ActionResult<Customer>> GetCustomerAsync(int id)
         {
-            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var customerId) || customerId <= 0)
+            var validationResult = ValidateId(id);
+            if (validationResult != null)
             {
-                return BadRequest("Invalid customer ID.");
+                return validationResult;
             }
 
-            var customer = await _context.Customers.FindAsync(customerId);
+            var customer = await _context.Customers.FindAsync(id);
 
             if (customer == null)
             {
@@ -49,14 +59,15 @@ namespace SalesReactApp.Server.Controllers
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomerAsync(string id, Customer customer)
+        public async Task<IActionResult> PutCustomerAsync(int id, Customer customer)
         {
-            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var customerId) || customerId <= 0)
+            var validationResult = ValidateId(id);
+            if (validationResult != null)
             {
-                return BadRequest("Invalid customer ID.");
+                return validationResult;
             }
 
-            if (customerId != customer.Id)
+            if (id != customer.Id)
             {
                 return BadRequest("The Ids do not correspond.");
             }
@@ -69,7 +80,7 @@ namespace SalesReactApp.Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(customerId))
+                if (!CustomerExists(id))
                 {
                     return NotFound();
                 }
@@ -95,14 +106,15 @@ namespace SalesReactApp.Server.Controllers
 
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomerAsync(string id)
+        public async Task<IActionResult> DeleteCustomerAsync(int id)
         {
-            if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out var customerId) || customerId <= 0)
+            var validationResult = ValidateId(id);
+            if (validationResult != null)
             {
-                return BadRequest("Invalid customer ID.");
+                return validationResult;
             }
 
-            var customer = await _context.Customers.FindAsync(customerId);
+            var customer = await _context.Customers.FindAsync(id);
             if (customer == null)
             {
                 return NotFound();
